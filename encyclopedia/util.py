@@ -27,11 +27,25 @@ def save_entry(title, content):
 
 def get_entry(title):
     """
-    Retrieves an encyclopedia entry by its title. If no such
-    entry exists, the function returns None.
+    Returns a list of all names of encyclopedia entries that contain the input string
     """
     try:
         f = default_storage.open(f"entries/{title}.md")
         return f.read().decode("utf-8")
     except FileNotFoundError:
+        return None
+
+def search_entry(term):
+    """
+    Retrieves an encyclopedia entry by its title. If no such
+    entry exists, the function returns None.
+    """
+    matches = []
+    for entry in list_entries():
+        if (str.upper(term) in str.upper(entry)):
+            matches.append(entry)
+
+    if (len(matches) > 0):
+        return matches
+    else:
         return None

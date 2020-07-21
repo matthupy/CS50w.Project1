@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from random import randrange
 
@@ -10,6 +11,29 @@ def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries()
     })
+
+def create(request):
+    return render(request, "encyclopedia/create.html")
+
+def create_post(request):
+    # Get the inputs
+    title = request.GET.get('title')
+    content = request.GET.get('content')
+
+    # Create the new entry
+    util.save_entry(title=title, content=content)
+
+    return redirect('index')
+
+def edit(request, title):
+    # Get the entry to be edited
+    content = util.get_entry(title=title)
+
+    context = {
+        "title":title,
+        "content":content
+    }
+    return render(request, "encyclopedia/create.html", context)
 
 def page(request, title):
     entry = util.get_entry(title)
@@ -32,14 +56,9 @@ def random(request):
     return redirect('page', title=title)
 
 def search(request):
-    input = request.GET.get('q')
-    entries = util.list_entries()
-
-    matches = []
-    for entry in entries:
-        if (str.upper(input) in str.upper(entry)):
-            matches.append(entry)
+    term = request.GET.get('q')
+    entries = util.search_entry(term)
 
     return render(request, "encyclopedia/results.html", {
-        "entries": matches
+        "entries": entries
     })
