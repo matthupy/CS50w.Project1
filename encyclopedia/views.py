@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from random import randrange
 
 import markdown2
 
@@ -21,3 +22,12 @@ def page(request, title):
             "title":title,
         }
         return render(request, "encyclopedia/page.html", context)
+
+def random(request):
+    # Get a random page
+    entries = util.list_entries()
+    index = randrange(len(entries))
+    title = entries[index]
+
+    return redirect('page', title=title)
+
