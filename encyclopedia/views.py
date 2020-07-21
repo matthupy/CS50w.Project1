@@ -31,3 +31,15 @@ def random(request):
 
     return redirect('page', title=title)
 
+def search(request):
+    input = request.GET.get('q')
+    entries = util.list_entries()
+
+    matches = []
+    for entry in entries:
+        if (str.upper(input) in str.upper(entry)):
+            matches.append(entry)
+
+    return render(request, "encyclopedia/results.html", {
+        "entries": matches
+    })
